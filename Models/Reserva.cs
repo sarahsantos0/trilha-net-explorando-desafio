@@ -2,59 +2,52 @@ namespace DesafioProjetoHospedagem.Models
 {
     public class Reserva
     {
-        public List<Pessoa> Hospedes { get; set; }
-        public Suite Suite { get; set; }
-        public int DiasReservados { get; set; }
-
-        public Reserva() { }
-
-        public Reserva(int diasReservados)
-        {
-            DiasReservados = diasReservados;
-        }
+        public List<Pessoa> Hospedes { get; private set; }
+        public Suite Suite { get; private set; }
+        public int DiasReservados { get; private set; }
 
         public void CadastrarHospedes(List<Pessoa> hospedes)
         {
-            // TODO: Verificar se a capacidade é maior ou igual ao número de hóspedes sendo recebido
-            // *IMPLEMENTE AQUI*
-            if (true)
+
+            if (hospedes.Count > Suite.Capacidade)
             {
-                Hospedes = hospedes;
+                throw new ArgumentException("Número de hóspedes excede a capacidade da suíte.");
             }
-            else
-            {
-                // TODO: Retornar uma exception caso a capacidade seja menor que o número de hóspedes recebido
-                // *IMPLEMENTE AQUI*
-            }
+
+            Hospedes = hospedes;
         }
 
         public void CadastrarSuite(Suite suite)
         {
+            if (string.IsNullOrEmpty(suite.TipoSuite)) 
+            {
+                throw new ArgumentException("A suíte não pode ser vazia.");
+            }
+
             Suite = suite;
         }
 
-        public int ObterQuantidadeHospedes()
+        public void DefinirDiasReservados(int diasReservados)
         {
-            // TODO: Retorna a quantidade de hóspedes (propriedade Hospedes)
-            // *IMPLEMENTE AQUI*
-            return 0;
-        }
-
-        public decimal CalcularValorDiaria()
-        {
-            // TODO: Retorna o valor da diária
-            // Cálculo: DiasReservados X Suite.ValorDiaria
-            // *IMPLEMENTE AQUI*
-            decimal valor = 0;
-
-            // Regra: Caso os dias reservados forem maior ou igual a 10, conceder um desconto de 10%
-            // *IMPLEMENTE AQUI*
-            if (true)
+            if (diasReservados <= 0)
             {
-                valor = 0;
+                throw new ArgumentException("A quantidade de dias reservados deve ser no mínimo 1.");
             }
 
-            return valor;
+            DiasReservados = diasReservados;
+        }
+
+        public decimal CalcularValorTotal()
+        {
+            decimal valorTotal = Suite.ValorDiaria * DiasReservados;
+            
+            // Aplicando desconto de 10% se a reserva for para 10 dias ou mais
+            if (DiasReservados >= 10)
+            {
+                valorTotal *= 0.9m;
+            }
+
+            return valorTotal;
         }
     }
 }
